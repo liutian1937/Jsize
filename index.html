@@ -4,9 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Jwalk - JavaScript Animation Library</title>
-<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.0/pure-min.css" />
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="pure.css" />
 <body>
 	<div class="pure-g-r" id="layout">
 		<!--menu start-->
@@ -182,10 +181,71 @@ function move(type){
 
 
 
-
+<style>
+#jsizeNav{width:100%;height:32px;border-bottom:1px solid #ccc;background:#fff;position:fixed;left:0px;top:0px;z-index:9999;text-align:center;font-size:12px;line-height:20px;-webkit-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-moz-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-o-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);box-shadow:0 0 15px 0 rgba(0,0,0,0.66);}
+#jsizeNav .jsizeItem{height:100%;display:inline-block;text-align:center;position:relative;cursor:pointer;}
+#jsizeNav .jsizeItem .jsizeLeft,#jsizeNav .jsizeItem .jsizeRight{position:absolute;top:0px;display:inline-block;color:#333;height:32px;line-height:32px;width:49px;text-align:center;background:url(https://froont.com/_static/images/breakpoint_mark.gif) center 0 no-repeat;}
+#jsizeNav .jsizeItem .jsizeLeft{left:-25px;}
+#jsizeNav .jsizeItem .jsizeRight{right:-25px;}
+</style>
 
 <script>
 (function(){
+	var Junit = {
+		addEvent : (function() {
+			if (window.addEventListener) {
+				return function(el, type, fn) {
+					el.addEventListener(type, function(e){
+						fn(e);
+					}, false);
+				};
+			} else if (window.attachEvent) {
+				return function(el, type, fn) {
+					el.attachEvent("on" + type, function(e){
+						fn(e);
+					});
+				};
+			}
+		})(),
+		randomColor : function () {
+			var arr = ['#a3b775','#b399ce','#f2b23b','#88e0d9','#d25e1c','#acedc3','#c1c4b9','#88b1b5','#63ebd2','#cced5a','#f77ae5'], len = arr.length,
+			index = Math.floor(Math.random()*len);
+			return arr[index];
+		},
+		getTarget : function (target, tag) {
+			while (target.nodeName !== tag) {
+				target = target.parentNode ;
+			};
+			return target ;
+		},
+		addEvent1 : function(){
+			if(window.onmouseenter)	{
+				return function (elem, type, fn) {
+					elem.attachEvent('on'+type, fn);
+				}
+			} else{
+				return function (elem, type, fn) {
+					if (type === 'mouseenter' || type === 'mouseleave') {
+						type = type === 'mouseenter' ? 'mouseover' : 'mouseout' ;
+						elem.addEventListener(type, this.mouseFn(fn) , false);
+					}else{
+						elem.addEventListener(type, fn, false);
+					};
+				}
+			}
+		}(),
+		mouseFn : function(fn){
+			return function(e){
+				var parent = e.relatedTarget;
+				while(parent!=this && parent){
+					parent = parent.parentNode;
+				}
+				if(parent != this){
+					fn(e)
+				}
+			}
+		}
+	};
 	var Jsize = function (params) {
 		if( !(this instanceof Jsize) ) {
 			return new Jsize(params) ;
@@ -202,13 +262,45 @@ function move(type){
 		};
 		this.init();
 	};
+	
 	Jsize.prototype.init = function () {
-		var html , i = 0 , len = this.options.range.length;
+		var html = [], nav, i = 0 , range = this.options.range, len = range.length, bodyWidth;
+		bodyWidth = document.body.clientWidth || document.documentElement.clientWidth;
 		document.body.innerHTML = '<div id="jsize_wraper">'+document.body.innerHTML+'</div>';
 		for ( ; i < len ; i += 1 ) {
-			
-		}
-	}
+			if (bodyWidth > range[i]){
+				html.unshift('<div class="jsizeItem" style="width:'+range[i]+'px;"><span class="jsizeLeft">'+range[i]+'</span><span class="jsizeRight">'+range[i]+'</span>');
+				html.push('</div>');
+			};
+		};
+		html = html.join('');
+		nav = document.createElement('div');
+		nav.id = 'jsizeNav' ;
+		nav.innerHTML = html;
+		document.body.appendChild(nav);
+		Junit.addEvent(nav,'mouseover',function(e){
+			var e = e || window.event, target = e.target || srcElement , elem;
+			elem = Junit.getTarget(target,'DIV');
+			this.close = true;
+			if(elem.className === 'jsizeItem' && this.close){
+				elem.style.backgroundColor = Junit.randomColor();
+				this.close = false;
+			};
+		});
+		
+		Junit.addEvent(nav,'mouseout',function(e){
+			var e = e || window.event, target = e.target || srcElement , elem;
+			elem = Junit.getTarget(target,'DIV');
+			this.close = true;
+			if(elem.className === 'jsizeItem'){
+				elem.style.backgroundColor = '';
+				
+			};
+		});
+		
+	};
+	
+	
 	window.Jsize = Jsize ;
 })();
 Jsize();
