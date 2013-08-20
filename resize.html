@@ -5,46 +5,64 @@
 <title>Jwalk - JavaScript Animation Library</title>
 <style>
 html,body{width:100%;height:100%;margin:0;padding:0;}
-body{background:url(https://froont.com/_static/images/chess.gif) repeat;}
+body{background:url(background.gif) repeat;}
 #jsizeWraper{width:100%;height:100%;margin:0 auto;background:#fff;}
 #jsizeWraper iframe{width:100%;height:100%;border:none;display:block;}
-#jsizeNav{width:100%;height:32px;border-bottom:1px solid #ccc;background:#fff;position:fixed;left:0px;top:0px;z-index:9999;text-align:center;font-size:12px;line-height:20px;-webkit-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-moz-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-o-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);box-shadow:0 0 15px 0 rgba(0,0,0,0.66);}
+#jsizeNav{width:100%;height:32px;border-bottom:1px solid #ccc;background:#fff;position:fixed;left:0px;z-index:999;text-align:center;font-size:12px;line-height:20px;-webkit-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-moz-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);-o-box-shadow:0 0 15px 0 rgba(0,0,0,0.66);box-shadow:0 0 15px 0 rgba(0,0,0,0.66);}
 #jsizeNav .jsizeItem{height:100%;width:100%;text-align:center;position:absolute;top:0;left:50%;}
 #jsizeNav .jsizeItem a{height:100%;display:inline-block;position:relative;text-decoration:none;color:#333;-webkit-transition:all 0.3s linear;*zoom:1;line-height:32px;}
-#jsizeNav .jsizeItem a:hover{background:#999;}
-#jsizeNav .jsizeItem a.cur{background:#ddd;}
+#jsizeNav .jsizeItem a:hover{background:#ddd;}
+#jsizeNav .jsizeItem a.cur{background:#999;}
 
-#jsizeNav .jsizeItem .jsizeLeft,#jsizeNav .jsizeItem .jsizeRight{position:absolute;top:0px;display:inline-block;color:#333;height:32px;line-height:32px;width:49px;text-align:center;background:url(https://froont.com/_static/images/breakpoint_mark.gif) center 0 no-repeat;}
+#jsizeNav .jsizeItem .jsizeLeft,#jsizeNav .jsizeItem .jsizeRight{position:absolute;top:0px;display:inline-block;color:#333;height:32px;line-height:32px;width:49px;text-align:center;background:url(line.gif) center 0 no-repeat;}
 #jsizeNav .jsizeItem .jsizeLeft{left:-25px;}
 #jsizeNav .jsizeItem .jsizeRight{right:-25px;}
 
-#newlink{width:320px;height:30px;position:absolute;left:50%;top:50%;margin-left:-100px;margin-top:-15px;}
-#newlink .link{width:250px;height:28px;border:1px solid #ccc;display:inline-block;padding:0 5px;line-height:28px;color:#333;font-size:12px;}
-#newlink .link:focus{border:1px solid #2a5db0;outline:none;}
-#newlink .btn{height:30px;border:none;display:inline-block;margin-top:10px;line-height:30px;font-size:12px;padding:0px 8px;background:#2a5db0;color:#fff;}
+#mark{width:100%;height:100%;position:absolute;top:0;left:0;background:rgba(255,255,255,0.8);z-index:1000;}
+#newlink{width:320px;height:40px;position:absolute;left:50%;top:50%;margin-left:-155px;margin-top:-15px;}
+#newlink .link{width:253px;height:26px;border:1px solid #ccc;display:inline-block;padding:6px 60px 6px 5px;line-height:20px;color:#333;font-size:12px;}
+#newlink .link:focus{border-color:#2a5db0;outline:none;}
+#newlink .btn{position:absolute;top:0px;right:0px;height:40px;border:none;display:inline-block;line-height:30px;font-size:14px;width:55px;text-align:center;background:#2a5db0;color:#fff;cursor:pointer;}
+#newlink .btn:hover{background-color:#0650ee;}
+#mark a{font-size:20px;position:absolute;text-decoration:none;background:#2a5db0;color:#fff;right:0px;top:0px;height:32px;padding:0px 20px;line-height:32px;font-size:14px;}
+#mark a:hover{background:#0650ee;}
+
+#control{position:absolute;right:0px;bottom:50px;}
+#control a{display:block;position:absolute;right:0px;bottom:0px;z-index:1001;color:#fff;text-decoration:none;width:50px;height:30px;line-height:30px;text-align:center;}
+#control a:hover{background:#333;}
+#control .change{background:#db4f33;bottom:120px;}
+#control .show{background:#0f8018;bottom:90px;}
+#control .hide{background:#0650ee;bottom:60px;}
+#control .top{background:#F09609;bottom:30px;}
+#control .bottom{background:#E671B8;bottom:0px;}
 </style>
 <body>
 
 <div id="jsizeNav"></div>
 
-
-<div id="jsizeWraper">
+<div id="mark">
 	<div id="newlink">
 		<input type="text" class="link" value="" />
-		<input type="submit" class="btn" value="更改" onclick="change()" />
+		<input type="submit" class="btn" value="确定" onclick="change()" />
 	</div>
+	<a onclick="closeMark()" href="javascript:;" >关闭</a>
+</div>
+
+
+<div id="control">
+	<a onclick="control('change')" href="javascript:;" class="change">更改</a>
+	<a onclick="control('hide')" href="javascript:;" class="hide">隐藏</a>
+	<a onclick="control('show')" href="javascript:;" class="show">显示</a>
+	<a onclick="control('top')" href="javascript:;" class="top">顶部</a>
+	<a onclick="control('bottom')" href="javascript:;" class="bottom">底部</a>
+</div>
+
+<div id="jsizeWraper">
 	<iframe id="iframe" src=""></iframe>
 </div>
 
-<script>
-function change(){
-	var parent = document.getElementById('newlink'), url = parent.getElementsByTagName('input')[0].value;
-	if(url){
-		document.getElementById('iframe').src = url;
-		parent.style.display = 'none';
-	}
-}
 
+<script>
 (function(){
 
 	var Junit = {
@@ -63,11 +81,6 @@ function change(){
 				};
 			}
 		})(),
-		randomColor : function () {
-			var arr = ['#a3b775','#b399ce','#f2b23b','#88e0d9','#d25e1c','#acedc3','#c1c4b9','#88b1b5','#63ebd2','#cced5a','#f77ae5'], len = arr.length,
-			index = Math.floor(Math.random()*len);
-			return arr[index];
-		},
 		getTarget : function (target, tag) {
 			while (target.nodeName !== tag) {
 				target = target.parentNode ;
@@ -80,7 +93,9 @@ function change(){
 			return new Jsize(params) ;
 		};
 		this.options = {
-			range : [320,480,600,768,960,1280]
+			range : [320,480,600,768,960,1280],
+			iframe : 'iframe',
+			position : 'top'
 		};
 		if(params && typeof params === 'object'){
 			for (var key in params) {
@@ -89,6 +104,7 @@ function change(){
 				}
 			}
 		};
+		this.iframe = document.getElementById(this.options.iframe);
 		this.init();
 	};
 	
@@ -104,7 +120,13 @@ function change(){
 		};
 		html.push('<div class="jsizeItem" style="width:100px;margin-left:-50px;"><span style="z-index:'+j+1+';position:relative;line-height:32px;">1000px</span></div>');
 		html = html.join('');
+		
 		nav = document.getElementById('jsizeNav');
+		if(_this.options.position === 'top') {
+			nav.style.top = '0px';
+		}else{
+			nav.style.bottom = '0px';
+		};
 		nav.innerHTML = html;
 		Junit.addEvent(nav,'click',function(e){
 			var e = e || window.event, target = e.target || e.srcElement , elem, width;
@@ -120,11 +142,52 @@ function change(){
 			item[i].className = '';
 		};
 		elem.className = 'cur' ;
-	}
+	};
+	Jsize.prototype.changeUrl = function (url) {
+		this.iframe.src = url;
+	};
 	
 	window.Jsize = Jsize ;
 })();
-Jsize();
+var j = Jsize();
+
+function change(){
+	var mark = document.getElementById('mark'), url = mark.getElementsByTagName('input')[0].value, UrlRule = /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/;
+	if(url && UrlRule.test(url)){
+		j.changeUrl(url);
+		mark.style.display = 'none';
+	}else{
+		alert('请填写正确的URL地址');
+	}
+};
+function closeMark(){
+	document.getElementById('mark').style.display = 'none';
+};
+function control(type){
+	var mark = document.getElementById('mark'), nav = document.getElementById('jsizeNav') ;
+	switch(type){
+		case 'change' : 
+			mark.style.display = 'block';
+			mark.getElementsByTagName('input')[0].value = '';
+			break;
+		case 'hide' :
+			nav.style.display = 'none';
+			break;
+		case 'show' :
+			nav.style.display = 'block';
+			break;
+		case 'top' :
+			nav.style.display = 'block';
+			nav.style.top = '0px';
+			nav.style.bottom = 'auto';
+			break;
+		case 'bottom' :
+			nav.style.display = 'block';
+			nav.style.top = 'auto';
+			nav.style.bottom = '0px';
+			break;
+	}
+};
 </script>
 
 </body>
