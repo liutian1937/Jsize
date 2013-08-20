@@ -118,7 +118,7 @@ body{background:url(background.gif) repeat;}
 				html.push('<div class="jsizeItem" style="width:'+range[i]+'px;margin-left:-'+range[i]/2+'px;"><a href="javascript:;" data-width="'+range[i]+'px" style="width:'+range[i]+'px;z-index:'+j+'"><span class="jsizeLeft">'+range[i]+'</span><span class="jsizeRight">'+range[i]+'</span></a></div>');
 			}
 		};
-		html.push('<div class="jsizeItem" style="width:100px;margin-left:-50px;"><span style="z-index:'+j+1+';position:relative;line-height:32px;">1000px</span></div>');
+		html.push('<div class="jsizeItem" style="width:100px;margin-left:-50px;"><span id="widthText" style="color:#fff;z-index:'+j+1+';position:relative;line-height:32px;"></span></div>');
 		html = html.join('');
 		
 		nav = document.getElementById('jsizeNav');
@@ -128,11 +128,13 @@ body{background:url(background.gif) repeat;}
 			nav.style.bottom = '0px';
 		};
 		nav.innerHTML = html;
+		document.getElementById('widthText').innerHTML = bodyWidth + 'px' ;
 		Junit.addEvent(nav,'click',function(e){
 			var e = e || window.event, target = e.target || e.srcElement , elem, width;
 			elem = Junit.getTarget(target,'A');
 			width = elem.getAttribute('data-width');
 			document.getElementById('jsizeWraper').style.width = width;
+			document.getElementById('widthText').innerHTML = width;
 			_this.addClass(elem);
 		});
 	};
